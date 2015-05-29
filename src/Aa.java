@@ -1,3 +1,5 @@
+import java.util.Random;
+
 public class Aa {
 
 	public int valor;
@@ -36,11 +38,19 @@ public class Aa {
 			aux.dir = a;
 			return aux;
 		}
+		/*if(a != null && a.esq != null && a.esq.cor == R) {
+			Aa aux = a.esq.dir;
+			Aa m = a.esq;
+			a.esq.dir = a;
+			a.esq = aux;
+			return m;
+		}*/
 		return a;
 	}
 	
 	static Aa rodeEsq(Aa a) {
 		if(a != null && a.dir != null && a.dir.dir != null && a.dir.cor == R && a.dir.dir.cor == R) {
+			a.dir.dir.cor = N;
 			Aa aux = a.dir;
 			a.dir = aux.esq;
 			aux.esq = a;
@@ -54,23 +64,21 @@ public class Aa {
 			a = new Aa(i, R, null, null);
 		}
 		else if(i > a.valor) {
-			if(a.dir == null)
-			{
+			if(a.dir == null) {
 				a.dir = new Aa(i, R, null, null);
+			} else {
+				a.dir = insere(a.dir, i);
 			}
-			else
-				insere(a.dir, i);
 		}
 		else if(i < a.valor) {
-			if(a.esq == null)
-			{
+			if(a.esq == null) {
 				a.esq = new Aa(i, R, null, null);
+			} else {
+				a.esq = insere(a.esq, i);
 			}
-			else
-				insere(a.esq, i);
 		}
-		a = rodeDir(a);
 		a = rodeEsq(a);
+		a = rodeDir(a);
 		return a;
 	}
 	
@@ -81,12 +89,37 @@ public class Aa {
 		}
 		return a;
 	}
+	static int nivel(Aa a){
+		int cont = 0;
+		if (a.esq != null){
+			cont += nivel(a.esq) + a.esq.cor;
+		}
+		return cont;
+	}
+	static boolean testeSubArvoreAa(Aa a, int n, boolean raizPodeSerVermelha) {
+		boolean preto;
+		if(a == null && n != 0)
+			return false;
+		if(a.cor == R && raizPodeSerVermelha == false)
+			return false;
+		if(a.cor == N)
+			preto = true;
+		else
+			preto = false;
+		if(!testeSubArvoreAa(a.esq, nivel(a.esq), preto))
+			return false;
+		return true;
+	}
+	static boolean testeArvoreAa(Aa a) {
+		return testeSubArvoreAa(a, nivel(a), false);
+	}
 	
 	public static void main(String[] args) {
 		//testInflixe();
 		//testRodeDir();
 		//testRodeEsq();
 		//testRodeDir2();
+		//testRodeDir3();
 		//testInsere1();
 		//testInsere2();
 		//testInsere3();
@@ -94,11 +127,45 @@ public class Aa {
 		//testInsereECorrige2();
 		//testInsereECorrige3();
 		//testInsereECorrige4();
-		testInsereECorrige5();
+		//testInsereECorrige5();
+		//testInsereECorrige6();
+		testInsereECorrige7();
+		//testeArvoreAa();
+	}
+	
+	static void testInsereECorrige7() {
+		System.out.println ("\n\n INSERE E CORRIGE 7");
+		Aa a = null;
+		Fenetre j1 = new Fenetre(a);
+		Random rand = new Random();
+		for(int i = 0; i < 21 ; i++) {
+			int nRand = rand.nextInt(101);
+			System.out.println(nRand);
+			a = insereECorrigeRaiz(a, nRand);
+			j1 = new Fenetre(a);
+		}
+		System.out.println(testeArvoreAa(a));
+	}
+	
+	static void testInsereECorrige6() {
+		System.out.println ("\n\n INSERE E CORRIGE 6");
+		Aa a = new Aa (1, N, null, 
+				new Aa (2, N, null,
+						new Aa (4, R, 
+								null, null)));
+		Fenetre j1 = new Fenetre(a);
+		a = insereECorrigeRaiz(a, 3);
+		j1 = new Fenetre(a);
+		a = insereECorrigeRaiz(a, 6);
+		//j1 = new Fenetre(a);
+		a = insereECorrigeRaiz(a, 5);
+		//j1 = new Fenetre(a);
+		a = insereECorrigeRaiz(a, 7);
+		//Fenetre j2 = new Fenetre(a);
 	}
 	
 	static void testInsereECorrige5() {
-		System.out.println ("\n\n INSERE E CORRIGE 4");
+		System.out.println ("\n\n INSERE E CORRIGE 5");
 		Aa a = null;
 		Fenetre j1 = new Fenetre(a);
 		a = insereECorrigeRaiz(a, 2);
@@ -110,11 +177,13 @@ public class Aa {
 		a = insereECorrigeRaiz(a, 3);
 		j1 = new Fenetre(a);
 		a = insereECorrigeRaiz(a, 6);
-		//j1 = new Fenetre(a);
+		j1 = new Fenetre(a);
 		a = insereECorrigeRaiz(a, 5);
-		//j1 = new Fenetre(a);
+		j1 = new Fenetre(a);
 		a = insereECorrigeRaiz(a, 7);
-		//Fenetre j2 = new Fenetre(a);
+		j1 = new Fenetre(a);
+		a = insereECorrigeRaiz(a, 7);
+		j1 = new Fenetre(a);
 	}
 	
 	static void testInflixe() {
@@ -128,6 +197,21 @@ public class Aa {
 									new Aa (11, R, null, null))));
 			System.out.println (infixe(a));
 			
+	}
+	
+	static void testRodeDir3() {
+		System.out.println ("\n\n RODE DIR 3");
+		Aa a = new Aa (1, N, null, 
+					new Aa (2, N, null,
+							new Aa (4, R, 
+									new Aa (3, R, null, null), null)));
+		Fenetre j = new Fenetre(a);
+		a.dir.dir = rodeDir(a.dir.dir);
+		j = new Fenetre(a);
+		a.dir = rodeEsq(a.dir);
+		j = new Fenetre(a);
+		a = rodeEsq(a);
+		j = new Fenetre(a);
 	}
 	
 	static void testRodeDir() {

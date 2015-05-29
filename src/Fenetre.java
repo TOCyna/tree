@@ -67,7 +67,7 @@ class Fenetre extends Canvas {
 	a = DArbre.copyArbre (_a);
 	Frame f = new Frame("Arbre " + compteur++);
 	f.add(this);
-	f.setSize(600, 600);
+	f.setSize(400, 700);
 	f.addWindowListener(new WindowAdapter() {
 		public void windowClosing(WindowEvent e) {
 		    System.exit(0);
