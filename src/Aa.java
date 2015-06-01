@@ -33,6 +33,7 @@ public class Aa {
 	}
 	static Aa rodeDir(Aa a) {
 		if(a != null && a.esq != null && a.esq.cor == R) {
+			a.cor = R;
 			Aa aux = a.esq;
 			a.esq = a.esq.dir;
 			aux.dir = a;
@@ -77,8 +78,8 @@ public class Aa {
 				a.esq = insere(a.esq, i);
 			}
 		}
-		a = rodeEsq(a);
 		a = rodeDir(a);
+		a = rodeEsq(a);
 		return a;
 	}
 	
@@ -144,7 +145,7 @@ public class Aa {
 			a = insereECorrigeRaiz(a, nRand);
 			j1 = new Fenetre(a);
 		}
-		System.out.println(testeArvoreAa(a));
+		//System.out.println(testeArvoreAa(a));
 	}
 	
 	static void testInsereECorrige6() {
