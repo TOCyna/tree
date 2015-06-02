@@ -33,6 +33,7 @@ public class Aa {
 	}
 	static Aa rodeDir(Aa a) {
 		if(a != null && a.esq != null && a.esq.cor == R) {
+			a.esq.cor = a.cor;
 			a.cor = R;
 			Aa aux = a.esq;
 			a.esq = a.esq.dir;
@@ -98,17 +99,22 @@ public class Aa {
 		return cont;
 	}
 	static boolean testeSubArvoreAa(Aa a, int n, boolean raizPodeSerVermelha) {
-		boolean preto;
-		if(a == null && n != 0)
+		if((a == null && n == 0))
+			return true;
+		else if((a.cor == R && raizPodeSerVermelha == false))
 			return false;
-		if(a.cor == R && raizPodeSerVermelha == false)
-			return false;
-		if(a.cor == N)
-			preto = true;
-		else
-			preto = false;
-		if(!testeSubArvoreAa(a.esq, nivel(a.esq), preto))
-			return false;
+		
+		boolean raizPSV = false;
+		if(a.cor == 1)
+			raizPSV = true;
+		
+		if(a.esq != null)
+			if(!testeSubArvoreAa(a.esq, nivel(a.esq), raizPSV))
+				return false;
+		if(a.dir != null)
+			if(!testeSubArvoreAa(a.dir, nivel(a.dir), raizPSV))
+				return false;
+
 		return true;
 	}
 	static boolean testeArvoreAa(Aa a) {
@@ -130,8 +136,26 @@ public class Aa {
 		//testInsereECorrige4();
 		//testInsereECorrige5();
 		//testInsereECorrige6();
-		testInsereECorrige7();
+		//testInsereECorrige7();
 		//testeArvoreAa();
+		testTestArvoreAa1();
+	}
+	
+	static void testTestArvoreAa1() {
+		System.out.println ("\n\n TESTE testArvoreAa1");
+		Aa a = null;
+		
+		Random rand = new Random();
+		for(int i = 0; i < 200 ; i++) {
+			int nRand = rand.nextInt(100);
+			System.out.println(nRand);
+			a = insereECorrigeRaiz(a, nRand);
+		}
+		Fenetre j1 = new Fenetre(a);
+		if(testeArvoreAa(a))
+			System.out.println("ARVORE Aa VALIDA");
+		else
+			System.out.println("ARVORE Aa INVALIDA");
 	}
 	
 	static void testInsereECorrige7() {
@@ -145,7 +169,7 @@ public class Aa {
 			a = insereECorrigeRaiz(a, nRand);
 			j1 = new Fenetre(a);
 		}
-		//System.out.println(testeArvoreAa(a));
+		System.out.println(testeArvoreAa(a));
 	}
 	
 	static void testInsereECorrige6() {
